@@ -1,4 +1,5 @@
 import { VercelRequest, VercelResponse } from '@vercel/node'
+import { BEARER_TOKEN } from '../../config'
 
 const authenticateToken = (req: VercelRequest, res: VercelResponse, next: () => void) => {
   const authHeader = req.headers.authorization
@@ -9,9 +10,8 @@ const authenticateToken = (req: VercelRequest, res: VercelResponse, next: () => 
   }
 
   const token = authHeader.split(' ')[1]
-  const validToken = process.env.BEARER_TOKEN
 
-  if (token !== validToken) {
+  if (token !== BEARER_TOKEN) {
     res.status(403).json({ message: 'Forbidden' })
     return
   }

@@ -1,6 +1,6 @@
 import { VercelRequest, VercelResponse } from '@vercel/node'
 import axios from 'axios'
-import { OPENAI_CHAT_URL } from '../config'
+import { OPENAI_API_KEY, OPENAI_CHAT_URL } from '../config'
 import { ChatCompletion, ChatCompletionCreateParams } from 'openai/resources'
 import authenticateToken from './middleware/auth'
 
@@ -11,9 +11,9 @@ export const config = {
 
 export default async (req: VercelRequest, res: VercelResponse) => {
   authenticateToken(req, res, async () => {
-    const { message } = req.body
+    const { message, model } = req.body
     const options: ChatCompletionCreateParams = {
-      model: 'gpt-4o',
+      model: model || 'gpt-4o',
       messages: [
         { role: 'user', content: message },
       ],
@@ -25,7 +25,7 @@ export default async (req: VercelRequest, res: VercelResponse) => {
         {
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
+            'Authorization': `Bearer ${OPENAI_API_KEY}`
           }
         },
       )
